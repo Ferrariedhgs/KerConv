@@ -1,12 +1,13 @@
 #include "main.h"
 
 // a sample exported function
-void KERCONV_API CreateKernel(const char* type, int** kernel, const int x, const char* variation)
+void KERCONV_API CreateKernel(const char* type, int** kernel, const int x, kernelType ktype, kernelVariation variation)
 {
-    if(strcmp(type,"sobel")) CreateKernelSobel(kernel,x,variation);
-    else if(strcmp(type,"median")) CreateKernelMedian(kernel,x);
-    else if(strcmp(type,"gaussian")) CreateKernelGaussian(kernel,x,variation);
-    else if(strcmp(type,"shift")) CreateKernelShift(kernel,x,variation);
+    if(ktype==Sobel) CreateKernelSobel(kernel,x,variation);
+    //else if(ktype==Scharr) CreateKernelScharr(kernel,x,variation);
+    //else if(strcmp(type,"median")) CreateKernelMedian(kernel,x);
+    //else if(strcmp(type,"gaussian")) CreateKernelGaussian(kernel,x,variation);
+    //else if(strcmp(type,"shift")) CreateKernelShift(kernel,x,variation);
 }
 
 void KERCONV_API ConvKernel(int*** image, int** destination, const int imgx, const int imgy, const int imgz, const int** kernel, const int kerx)
@@ -22,7 +23,20 @@ void KERCONV_API MakeMono(const int*** image, const int imgx, const int imgy, in
             destination[i][j]=(int)(0.299*image[i][j][0]+0.587*image[i][j][1]+0.114*image[i][j][2]);
 }
 
-void KERCONV_API CreateKernelSobel(int** kernel, const int x, const char* variation)
+void KERCONV_API CreateKernelSobel(int** kernel, const int x, kernelVariation variation)
+{
+    if(variation==Vertical)
+    {
+
+    }
+    else if(variation==Horizontal)
+    {
+
+    }
+    else perror("Sobel kernel type not recognized");
+}
+
+void KERCONV_API CreateKernelScharr(int** kernel, const int x, const char* variation)
 {
     if(strcmp(variation,"vertical"))
     {
