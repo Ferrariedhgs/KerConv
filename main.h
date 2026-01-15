@@ -40,10 +40,10 @@ void KERCONV_API CreateKernel(const char* type,int** kernel, const int x, kernel
 void KERCONV_API ConvKernel(int*** image, int** destination, const int imgx, const int imgy, const int imgz, const int** kernel, const int kerx);
 void KERCONV_API MakeMono(int*** image, const int imgx, const int imgy, int** destination);
 void KERCONV_API CreateKernelSobel(int** kernel, const int x, kernelVariation variation);
-void KERCONV_API CreateKernelScharr(int** kernel, const int x, const char* variation);
+void KERCONV_API CreateKernelScharr(int** kernel, const int x, kernelVariation variation);
 void KERCONV_API CreateKernelMedian(int** kernel, const int x);
-void KERCONV_API CreateKernelGaussian(int** kernel, const int x, const char* sigma);
-void KERCONV_API CreateKernelShift(int** kernel, const int x, const char* direction);
+void KERCONV_API CreateKernelGaussian(int** kernel, const int x, double sigma);
+void KERCONV_API CreateKernelShift(int** kernel, const int x, kernelVariation direction);
 
 
 #ifdef __cplusplus
