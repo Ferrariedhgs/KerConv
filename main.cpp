@@ -4,10 +4,10 @@
 void KERCONV_API CreateKernel(const char* type, int** kernel, const int x, kernelType ktype, kernelVariation variation)
 {
     if(ktype==Sobel) CreateKernelSobel(kernel,x,variation);
-    //else if(ktype==Scharr) CreateKernelScharr(kernel,x,variation);
-    //else if(strcmp(type,"median")) CreateKernelMedian(kernel,x);
-    //else if(strcmp(type,"gaussian")) CreateKernelGaussian(kernel,x,variation);
-    //else if(strcmp(type,"shift")) CreateKernelShift(kernel,x,variation);
+    else if(ktype==Scharr) CreateKernelScharr(kernel,x,variation);
+    else if(ktype==Median) CreateKernelMedian(kernel,x);
+    //else if(ktype==Gauss)) CreateKernelGaussian(kernel,x,variation);
+    else if(ktype==Shift) CreateKernelShift(kernel,x,variation);
 }
 
 void KERCONV_API ConvKernel(int*** image, int** destination, const int imgx, const int imgy, const int imgz, const int** kernel, const int kerx)
@@ -36,17 +36,17 @@ void KERCONV_API CreateKernelSobel(int** kernel, const int x, kernelVariation va
     else perror("Sobel kernel type not recognized");
 }
 
-void KERCONV_API CreateKernelScharr(int** kernel, const int x, const char* variation)
+void KERCONV_API CreateKernelScharr(int** kernel, const int x, kernelVariation variation)
 {
-    if(strcmp(variation,"vertical"))
+    if(variation==Vertical)
     {
 
     }
-    else if(strcmp(variation,"horizontal"))
+    else if(variation==Horizontal)
     {
 
     }
-    else perror("Sobel kernel type not recognized");
+    else perror("Scharr kernel type not recognized");
 }
 
 void KERCONV_API CreateKernelMedian(int** kernel, const int x)
@@ -57,14 +57,30 @@ void KERCONV_API CreateKernelMedian(int** kernel, const int x)
             kernel[i][j]=med;
 }
 
-void KERCONV_API CreateKernelGaussian(int** kernel, const int x, const char* sigma)
+void KERCONV_API CreateKernelGaussian(int** kernel, const int x, double sigma)
 {
 
 }
 
-void KERCONV_API CreateKernelShift(int** kernel, const int x, const char* direction)
+void KERCONV_API CreateKernelShift(int** kernel, const int x, kernelVariation direction)
 {
+    if(direction==Up)
+    {
 
+    }
+    else if(direction==Down)
+    {
+
+    }
+    else if(direction==Left)
+    {
+
+    }
+    else if(direction==Right)
+    {
+
+    }
+    else perror("Shift kernel direction not recognised");
 }
 /*
 BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
