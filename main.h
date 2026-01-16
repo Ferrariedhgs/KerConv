@@ -36,14 +36,16 @@ typedef enum
     Right
 }kernelVariation;
 
-void KERCONV_API CreateKernel(const char* type,int** kernel, const int x, kernelType ktype, kernelVariation variation);
-void KERCONV_API ConvKernel(int*** image, int** destination, const int imgx, const int imgy, const int imgz, const int** kernel, const int kerx);
-void KERCONV_API MakeMono(int*** image, const int imgx, const int imgy, int** destination);
-void KERCONV_API CreateKernelSobel(int** kernel, const int x, kernelVariation variation);
-void KERCONV_API CreateKernelScharr(int** kernel, const int x, kernelVariation variation);
-void KERCONV_API CreateKernelMedian(int** kernel, const int x);
-void KERCONV_API CreateKernelGaussian(int** kernel, const int x, double sigma);
-void KERCONV_API CreateKernelShift(int** kernel, const int x, kernelVariation direction);
+int* KERCONV_API InitKernel(const int x=3);
+bool KERCONV_API FreeKernel(int** kernel);
+bool KERCONV_API CreateKernel(const char* type, int** kernel, kernelType ktype, kernelVariation variation, const int x=3);
+bool KERCONV_API ConvKernel(int*** image, int** destination, const int imgx, const int imgy, const int imgz, const int** kernel, const int kerx=3);
+bool KERCONV_API MakeMono(int*** image, const int imgx, const int imgy, int** destination);
+bool KERCONV_API CreateKernelSobel(int** kernel, kernelVariation variation, const int x=3);
+bool KERCONV_API CreateKernelScharr(int** kernel, kernelVariation variation, const int x=3);
+bool KERCONV_API CreateKernelMedian(int** kernel, const int x=3);
+bool KERCONV_API CreateKernelGaussian(int** kernel, double sigma, const int x=3);
+bool KERCONV_API CreateKernelShift(int** kernel, kernelVariation direction, const int x=3);
 
 
 #ifdef __cplusplus
