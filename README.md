@@ -1,2 +1,2 @@
 # KerConv
-Kernel convolution DLL
+Kernel creation and convolution DLL
