@@ -40,7 +40,7 @@ typedef enum
 int* KERCONV_API InitKernel(const int x=3);
 bool KERCONV_API FreeKernel(double** kernel);
 bool KERCONV_API CreateKernel(const char* type, double** kernel, kernelType ktype, kernelVariation variation, const int x=3);
-bool KERCONV_API ConvKernel(int*** image, int** destination, const int imgx, const int imgy, const int imgz, const double** kernel, const int kerx=3);
+bool KERCONV_API ApplyKernel(int** image, int** destination, const int imgx, const int imgy, const double** kernel, const int kerx=3);
 bool KERCONV_API MakeMono(int*** image, const int imgx, const int imgy, int** destination);
 bool KERCONV_API CreateKernelSobel(double** kernel, kernelVariation variation, const int x=3);
 bool KERCONV_API CreateKernelScharr(double** kernel, kernelVariation variation, const int x=3);
