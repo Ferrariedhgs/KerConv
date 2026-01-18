@@ -37,8 +37,26 @@ bool KERCONV_API CreateKernel(const char* type, double** kernel, kernelType ktyp
     return 1;
 }
 
-bool KERCONV_API ConvKernel(int*** image, int** destination, const int imgx, const int imgy, const int imgz, const double** kernel, const int kerx)
+bool KERCONV_API ApplyKernel(int** image, int** destination, const int imgx, const int imgy, const double** kernel, const int kerx)
 {
+    if(kerx%2==0)
+    {
+        fprintf(stderr, "Kernel size must be odd\n");
+        return 0;
+    }
+
+    int padding=kerx/2;
+    for(int h=padding; h<imgy-padding; h++)
+        for(int w=padding; w<imgx-padding; w++)
+        {
+            double sum=0;
+            for(int y=-padding; y<=padding; y++)
+                for(int x=-padding; x<=padding; x++)
+                    sum+=kernel[y+padding][x+padding]*image[y+h][x+w];
+            if(sum>255) sum=255;
+            if(sum<0) sum=0;
+            destination[h][w]=sum;
+        }
 
     return 1;
 }
