@@ -3,7 +3,8 @@
 
 #include <windows.h>
 #include <math.h>
-#include <string>
+#include <stdbool.h>
+#include <stdio.h>
 
 #ifdef KERCONV_EXPORT
 #define KERCONV_API __declspec(dllexport)
@@ -24,7 +25,6 @@ typedef enum
     Median,
     Gauss,
     Shift
-
 }kernelType;
 
 typedef enum
@@ -37,16 +37,16 @@ typedef enum
     Right
 }kernelVariation;
 
-double* KERCONV_API InitKernel(const int x=3);
+double* KERCONV_API InitKernel(const int x);
 bool KERCONV_API FreeKernel(double* kernel);
-bool KERCONV_API CreateKernel(double* kernel, kernelType ktype, kernelVariation variation, const int x=3);
-bool KERCONV_API ApplyKernel(int* image, int* destination, const int imgx, const int imgy, const double* kernel, const int kerx=3);
+bool KERCONV_API CreateKernel(double* kernel, kernelType ktype, kernelVariation variation, const int x);
+bool KERCONV_API ApplyKernel(int* image, int* destination, const int imgx, const int imgy, const double* kernel, const int kerx);
 bool KERCONV_API MakeMono(int* image, const int imgx, const int imgy, int* destination);
-bool KERCONV_API CreateKernelSobel(double* kernel, kernelVariation variation, const int x=3);
-bool KERCONV_API CreateKernelScharr(double* kernel, kernelVariation variation, const int x=3);
-bool KERCONV_API CreateKernelMedian(double* kernel, const int x=3);
-bool KERCONV_API CreateKernelGaussian(double* kernel, double sigma=1, const int x=3);
-bool KERCONV_API CreateKernelShift(double* kernel, kernelVariation direction, const int x=3);
+bool KERCONV_API CreateKernelSobel(double* kernel, kernelVariation variation, const int x);
+bool KERCONV_API CreateKernelScharr(double* kernel, kernelVariation variation, const int x);
+bool KERCONV_API CreateKernelMedian(double* kernel, const int x);
+bool KERCONV_API CreateKernelGaussian(double* kernel, double sigma, const int x);
+bool KERCONV_API CreateKernelShift(double* kernel, kernelVariation direction, const int x);
 
 
 #ifdef __cplusplus
