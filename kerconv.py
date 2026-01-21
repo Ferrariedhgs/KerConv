@@ -67,4 +67,7 @@ def create_kernel(kernel, ktype:KernelType, variation:KernelVariation, size:int)
     
 kernel=init_kernel(3)
 create_kernel(kernel,KernelType.Sobel,KernelVariation.Vertical,3)
+
 print_kernel(kernel,3)
+
+free_kernel(kernel)
