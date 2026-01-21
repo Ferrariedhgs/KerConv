@@ -64,6 +64,40 @@ def free_kernel(kernel):
 def create_kernel(kernel, ktype:KernelType, variation:KernelVariation, size:int):
     if not ckdll.CreateKernel(kernel, ktype, variation, size):
         raise RuntimeError("CreateKernel failed")
+
+def apply_kernel(gray: np.ndarray, kernel, ksize: int) -> np.ndarray:
+    if gray.ndim != 2:
+        raise ValueError("apply_kernel expects a grayscale image")
+
+    gray = gray.astype(np.int32, copy=False)
+    out = np.zeros_like(gray, dtype=np.int32)
+
+    ckdll.ApplyKernel(
+        gray.ctypes.data_as(ctypes.POINTER(ctypes.c_int)),
+        out.ctypes.data_as(ctypes.POINTER(ctypes.c_int)),
+        gray.shape[1],
+        gray.shape[0],
+        kernel,
+        ksize
+    )
+
+    return out
+
+def make_mono(rgb: np.ndarray) -> np.ndarray:
+    if rgb.ndim != 3 or rgb.shape[2] != 3:
+        raise ValueError("make_mono expects an RGB image")
+
+    rgb = rgb.astype(np.int32, copy=False)
+    out = np.zeros((rgb.shape[0], rgb.shape[1]), dtype=np.int32)
+
+    ckdll.MakeMono(
+        rgb.ctypes.data_as(ctypes.POINTER(ctypes.c_int)),
+        rgb.shape[1],
+        rgb.shape[0],
+        out.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+    )
+
+    return out
     
 kernel=init_kernel(3)
 create_kernel(kernel,KernelType.Sobel,KernelVariation.Vertical,3)
@@ -71,3 +105,4 @@ create_kernel(kernel,KernelType.Sobel,KernelVariation.Vertical,3)
 print_kernel(kernel,3)
 
 free_kernel(kernel)
+
