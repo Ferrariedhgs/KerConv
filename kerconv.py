@@ -5,20 +5,27 @@ import os
 
 ckdll = ctypes.WinDLL (os.path.join(os.path.dirname(__file__), "KerConv.dll"))
 
+ckdll.InitKernel.argtypes = [ctypes.c_int]
 ckdll.InitKernel.restype = ctypes.POINTER(ctypes.c_double)
+
 ckdll.FreeKernel.argtypes = [ctypes.POINTER(ctypes.c_double)]
+ckdll.FreeKernel.restype = ctypes.c_bool
+
 ckdll.CreateKernel.argtypes = [
     ctypes.POINTER(ctypes.c_double),  #kernel
     ctypes.c_int,                     #kernelType
     ctypes.c_int,                     #kernelVariation
     ctypes.c_int                      #x
 ]
+ckdll.CreateKernel.restype = ctypes.c_bool
+
 ckdll.CreateKernelGaussian.argtypes = [
     ctypes.POINTER(ctypes.c_double),  #kernel
     ctypes.c_double,                  #sigma
     ctypes.c_int                      #x
 ]
-ckdll.CreateKernel.restype = ctypes.c_bool
+ckdll.CreateKernelGaussian.restype = ctypes.c_bool
+
 ckdll.ApplyKernel.argtypes = [
     ctypes.POINTER(ctypes.c_int), #image
     ctypes.POINTER(ctypes.c_int), #destination
@@ -26,6 +33,14 @@ ckdll.ApplyKernel.argtypes = [
     ctypes.c_int, #image y
     ctypes.POINTER(ctypes.c_double), #kernel
     ctypes.c_int #kernel x
+]
+ckdll.ApplyKernel.restype = ctypes.c_bool
+
+ckdll.MakeMono.argtypes = [
+    ctypes.POINTER(ctypes.c_int), #image
+    ctypes.c_int, #image x
+    ctypes.c_int, #image y
+    ctypes.POINTER(ctypes.c_int) #destination
 ]
 
 
@@ -58,51 +73,27 @@ def init_kernel(size:int):
         raise ValueError("Kernel size must be odd")
     return ckdll.InitKernel(size)
 
-def free_kernel(kernel):
-    ckdll.FreeKernel(kernel)
-
 def create_kernel(kernel, ktype:KernelType, variation:KernelVariation, size:int):
     if not ckdll.CreateKernel(kernel, ktype, variation, size):
         raise RuntimeError("CreateKernel failed")
 
-def apply_kernel(gray: np.ndarray, kernel, ksize: int) -> np.ndarray:
-    if gray.ndim != 2:
-        raise ValueError("apply_kernel expects a grayscale image")
+def free_kernel(kernel):
+    ckdll.FreeKernel(kernel)
 
-    gray = gray.astype(np.int32, copy=False)
-    out = np.zeros_like(gray, dtype=np.int32)
+def make_mono(image:np.ndarray):
+    image=image.astype(np.int32)
+    h,w,c = image.shape
+    dest = np.zeros((h, w), dtype=np.int32)
+    image_ptr = image.ctypes.data_as(ctypes.POINTER(ctypes.c_int32))
+    dest_ptr  = dest.ctypes.data_as(ctypes.POINTER(ctypes.c_int32))
+    if not ckdll.MakeMono(image_ptr,w,h,dest_ptr):
+        raise RuntimeError("Image could not be processed")
+    
+    dest=dest.astype(np.int32)
+    return dest
 
-    ckdll.ApplyKernel(
-        gray.ctypes.data_as(ctypes.POINTER(ctypes.c_int)),
-        out.ctypes.data_as(ctypes.POINTER(ctypes.c_int)),
-        gray.shape[1],
-        gray.shape[0],
-        kernel,
-        ksize
-    )
 
-    return out
-
-def make_mono(rgb: np.ndarray) -> np.ndarray:
-    if rgb.ndim != 3 or rgb.shape[2] != 3:
-        raise ValueError("make_mono expects an RGB image")
-
-    rgb = rgb.astype(np.int32, copy=False)
-    out = np.zeros((rgb.shape[0], rgb.shape[1]), dtype=np.int32)
-
-    ckdll.MakeMono(
-        rgb.ctypes.data_as(ctypes.POINTER(ctypes.c_int)),
-        rgb.shape[1],
-        rgb.shape[0],
-        out.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
-    )
-
-    return out
     
 kernel=init_kernel(3)
 create_kernel(kernel,KernelType.Sobel,KernelVariation.Vertical,3)
-
 print_kernel(kernel,3)
-
-free_kernel(kernel)
-
