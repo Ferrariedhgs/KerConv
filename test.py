@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import ctypes
 import os
+import time
+import kerconv as kc
 
 
 img = cv2.imread(os.path.join(os.path.dirname(__file__), "testimg.jpg"))
@@ -56,19 +58,21 @@ Right=5
 
 kerx=3
 
+
+start=time.time()
+
 #reserve memory for the kernel
 kernel=KerConv.InitKernel(kerx)
 
 #create the kernel
-KerConv.CreateKernel(kernel,Sobel,Vertical,kerx)
+KerConv.CreateKernel(kernel,Sobel,Horizontal,kerx)
 #KerConv.CreateKernelGaussian(kernel,1,kerx)
 
-#print kernel
-print_kernel(kernel,kerx)
+
 
 #make image mono
-gray= cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-gray = gray.astype(np.int32)  
+gray=kc.make_mono(img)
+#gray = gray.astype(np.int32)  
 dest = np.zeros_like(gray, dtype=np.int32)
 
 #get pointers
@@ -80,8 +84,26 @@ KerConv.ApplyKernel(gray_ptr,dest_ptr,393,312,kernel,kerx)
 
 dest_display = np.clip(dest, 0, 255).astype(np.uint8)
 
+end=time.time()
+print(f'dll time: {end-start}\n')
 #display image
 cv2.imshow("Result", dest_display)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+#print kernel
+print_kernel(kernel,kerx)
+
+
+start=time.time()
+img_gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+img_sobel=cv2.Sobel(img_gray,cv2.CV_64F,1,0)
+end=time.time()
+print(f'cv2 time: {end-start}\n')
+
+
+#display image
+cv2.imshow("Result", img_sobel)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
