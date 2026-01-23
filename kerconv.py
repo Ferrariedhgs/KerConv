@@ -92,8 +92,29 @@ def make_mono(image:np.ndarray):
     dest=dest.astype(np.int32)
     return dest
 
-
+def filter_image(img, type:KernelType, modifier, ksize:int):
+    h,w,c = img.shape
     
-kernel=init_kernel(3)
-create_kernel(kernel,KernelType.Sobel,KernelVariation.Vertical,3)
-print_kernel(kernel,3)
+    if type==KernelType.Sobel or type==KernelType.Scharr:
+        cimg=make_mono(img)
+    else:
+        cimg=img
+    kernel=init_kernel(ksize)
+    if type==KernelType.Gauss:
+        ckdll.CreateKernelGaussian(kernel,modifier,ksize)
+    else:
+        create_kernel(kernel,type,modifier,ksize)
+
+    dest = np.zeros_like(cimg, dtype=np.int32)
+
+    #get pointers
+    img_ptr = cimg.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+    dest_ptr = dest.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+
+    #apply the kernel to the image
+    ckdll.ApplyKernel(img_ptr,dest_ptr,w,h,kernel,ksize)
+
+    dest_display = np.clip(dest, 0, 255).astype(np.uint8)
+    free_kernel(kernel)
+    
+    return dest_display
