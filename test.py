@@ -61,14 +61,14 @@ kerx=3
 
 start=time.time()
 
+
+'''
 #reserve memory for the kernel
 kernel=KerConv.InitKernel(kerx)
 
 #create the kernel
 KerConv.CreateKernel(kernel,Sobel,Horizontal,kerx)
 #KerConv.CreateKernelGaussian(kernel,1,kerx)
-
-
 
 #make image mono
 gray=kc.make_mono(img)
@@ -84,6 +84,11 @@ KerConv.ApplyKernel(gray_ptr,dest_ptr,393,312,kernel,kerx)
 
 dest_display = np.clip(dest, 0, 255).astype(np.uint8)
 
+#free kernel
+KerConv.FreeKernel(kernel)
+'''
+dest_display=kc.filter_image(img,kc.KernelType.Sobel,kc.KernelVariation.Vertical,3)
+
 end=time.time()
 print(f'dll time: {end-start}\n')
 #display image
@@ -92,8 +97,9 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 #print kernel
-print_kernel(kernel,kerx)
+#print_kernel(kernel,kerx)
 
+img = cv2.imread(os.path.join(os.path.dirname(__file__), "testimg.jpg"))
 
 start=time.time()
 img_gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -101,11 +107,30 @@ img_sobel=cv2.Sobel(img_gray,cv2.CV_64F,1,0)
 end=time.time()
 print(f'cv2 time: {end-start}\n')
 
-
 #display image
 cv2.imshow("Result", img_sobel)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-#free kernel
-KerConv.FreeKernel(kernel)
+
+
+
+dest_display=kc.filter_image(img,kc.KernelType.Scharr,kc.KernelVariation.Vertical,3)
+cv2.imshow("Scharr", dest_display)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+dest_display=kc.filter_image(img,kc.KernelType.Gauss,1,3)
+cv2.imshow("Gaussian", dest_display)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+dest_display=kc.filter_image(img,kc.KernelType.Median,0,3)
+cv2.imshow("Median", dest_display)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+dest_display=kc.filter_image(img,kc.KernelType.Shift,kc.KernelVariation.Up,7)
+cv2.imshow("Shift", dest_display)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
