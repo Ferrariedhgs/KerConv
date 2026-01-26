@@ -235,6 +235,18 @@ bool KERCONV_API CreateKernelShift(double* kernel, kernelVariation direction, co
 
     return 1;
 }
+
+bool KERCONV_API LoadBMP(char* file, int* destination)
+{
+    return 1;
+}
+
+
+bool KERCONV_API SaveBMP(int* image, char* destination)
+{
+    return 1;
+}
+
 /*
 BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
