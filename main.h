@@ -47,6 +47,8 @@ bool KERCONV_API CreateKernelScharr(double* kernel, kernelVariation variation, c
 bool KERCONV_API CreateKernelMedian(double* kernel, const int x);
 bool KERCONV_API CreateKernelGaussian(double* kernel, double sigma, const int x);
 bool KERCONV_API CreateKernelShift(double* kernel, kernelVariation direction, const int x);
+bool KERCONV_API LoadBMP(char* file, int* destination);
+bool KERCONV_API SaveBMP(int* image, char* destination);
 
 
 #ifdef __cplusplus
