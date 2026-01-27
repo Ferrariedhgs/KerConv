@@ -37,6 +37,21 @@ typedef enum
     Right
 }kernelVariation;
 
+typedef enum{
+    Mono,
+    RGB,
+    BGR
+}imageFormat;
+
+typedef struct{
+    int w; //width
+    int h; //height
+    unsigned int channels; //no. of channels 1/3
+    int* pt; //pointer
+    imageFormat format; //image format
+
+}Image;
+
 double* KERCONV_API InitKernel(const int x);
 bool KERCONV_API FreeKernel(double* kernel);
 bool KERCONV_API CreateKernel(double* kernel, kernelType ktype, kernelVariation variation, const int x);
@@ -47,8 +62,9 @@ bool KERCONV_API CreateKernelScharr(double* kernel, kernelVariation variation, c
 bool KERCONV_API CreateKernelMedian(double* kernel, const int x);
 bool KERCONV_API CreateKernelGaussian(double* kernel, double sigma, const int x);
 bool KERCONV_API CreateKernelShift(double* kernel, kernelVariation direction, const int x);
-bool KERCONV_API LoadBMP(char* file, int* destination);
-bool KERCONV_API SaveBMP(int* image, char* destination);
+Image KERCONV_API *LoadBMP(char* file);
+bool KERCONV_API FreeImage(Image *image);
+bool KERCONV_API SaveBMP(Image image, char* destination);
 
 
 #ifdef __cplusplus
