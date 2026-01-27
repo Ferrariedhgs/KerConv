@@ -236,13 +236,42 @@ bool KERCONV_API CreateKernelShift(double* kernel, kernelVariation direction, co
     return 1;
 }
 
-bool KERCONV_API LoadBMP(char* file, int* destination)
+Image KERCONV_API *LoadBMP(char* file)
 {
+    Image *tmp=malloc(sizeof(*tmp));
+    if(!tmp)
+    {
+        fprintf(stderr, "Failed to alocate memory for image");
+        return NULL;
+    }
+
+    //open file
+
+    //read metadata
+    tmp->w=0;
+    tmp->h=0;
+    tmp->pt=malloc(tmp->w*tmp->h*sizeof(*tmp->pt));
+    if(!tmp->pt)
+    {
+        fprintf(stderr, "Failed to alocate memory for image");
+        free(tmp);
+        return NULL;
+    }
+    //write struct
+
+    return tmp;
+}
+
+bool KERCONV_API FreeImage(Image *image)
+{
+    if(!image) return 0;
+
+    free(image->pt);
+    free(image);
     return 1;
 }
 
-
-bool KERCONV_API SaveBMP(int* image, char* destination)
+bool KERCONV_API SaveBMP(Image image, char* destination)
 {
     return 1;
 }
